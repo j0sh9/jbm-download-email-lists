@@ -20,9 +20,14 @@ function jbm_transfer_download_email_list() {
 function array_to_csv_download($list) {
 	$delimiter=";";
 	$filename = get_bloginfo()."-email-".date('Ymd').".csv";
+	$upload_dir = wp_upload_dir();
+	$upload_dir = $upload_dir['basedir'].'/email-lists/';
+    if (! is_dir($upload_dir)) {
+       mkdir( $upload_dir, 0755 );
+    }
 	if ( isset( $_POST['filename'] ) && !empty( $_POST['filename'] ) )
 		$filename = get_bloginfo().'-'.$_POST['filename']."-".date('Ymd').".csv";
-	$file = plugin_dir_path( __FILE__ ).'lists/'.$filename;
+	$file = $upload_dir.$filename;
 
 	$f = fopen($file, 'w');
 
@@ -139,10 +144,16 @@ function jbm_download_email_lists_html() {
 	
 	
 </form>
+<?php
+	//Get all the existing files and make them available for download at some point
+	$upload_dir = wp_upload_dir();
+	$file_path = $upload_dir['baseurl'].'/email-lists';
+?>
 <!--
-Get all the existing files and make them available for download at some point
-<a href="<?php echo plugin_dir_url( __FILE__ ).'lists/test-20170907.csv';?>" download>Download</a>
+<a href="<?php echo $file_path.'/test-20170907.csv';?>" download>Download</a>
 -->
+
+	
 <table id="userList">
 <?php
 	if ( isset($_POST['view'] ) ) {
