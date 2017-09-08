@@ -80,7 +80,7 @@ function jbm_output_download_lists() {
 	if ( empty($list) ) return;
 	
 	$cell = 'th';
-	$rows .= '<p>'.count($list).' Results</p>';
+	$rows .= '<p><strong>'.(count($list)-1).' Results</strong></p>';
 	$rows .= '<table id="userList">';
 	foreach ( $list as $line ) {
 		$row = "<tr>";
