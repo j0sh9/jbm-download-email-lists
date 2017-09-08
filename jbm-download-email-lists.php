@@ -80,6 +80,8 @@ function jbm_output_download_lists() {
 	if ( empty($list) ) return;
 	
 	$cell = 'th';
+	$rows .= '<p>'.count($list).' Results</p>';
+	$rows .= '<table id="userList">';
 	foreach ( $list as $line ) {
 		$row = "<tr>";
 		foreach ( $line as $value ) {
@@ -89,6 +91,7 @@ function jbm_output_download_lists() {
 		$cell = 'td';
 		$rows .= $row;
 	}
+	$rows .= '</table>';
 	return $rows;
 }
 
@@ -154,13 +157,13 @@ function jbm_download_email_lists_html() {
 -->
 
 	
-<table id="userList">
+
 <?php
 	if ( isset($_POST['view'] ) ) {
 		echo jbm_output_download_lists();
 	}
 ?>
-</table>
+
 <?php
 }
 ?>
