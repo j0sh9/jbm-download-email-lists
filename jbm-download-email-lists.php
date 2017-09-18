@@ -51,7 +51,12 @@ function array_to_csv_download($list) {
 function jbm_get_download_email_list() {
 	global $wpdb;
 	$table = $wpdb->prefix."users";
-	$all_users = $wpdb->get_results( "SELECT ID FROM $table" );
+	
+	if ( isset($_POST['pre-done-list']) && $_POST['pre-done-list'] == '1purchase' ) {
+		$all_users = $wpdb->get_results( "SELECT ID FROM $table WHERE 1 = (SELECT COUNT(meta_value) as count FROM ".$wpdb->prefix."postmeta WHERE meta_key LIKE '_customer_user' AND meta_value LIKE ID)" );
+	} else {
+		$all_users = $wpdb->get_results( "SELECT ID FROM $table" );
+	}
 
 	$list = array();
 	$list[] = array('Email','First Name','Last Name','Phone','State','Country','Type','User ID');
@@ -135,15 +140,22 @@ function jbm_download_email_lists_html() {
 	<p><button class="button" name="download" value="1">Download List</button></p>
 	<p><strong>Filename:</strong> <input name="filename" type="text" value="<?php echo (isset( $_POST['filename'] )?$_POST['filename']:'');?>" /></p>
 	<p><strong>States:</strong> <input name="states" type="text" value="<?php echo (isset( $_POST['states'] )?$_POST['states']:'');?>" /> *csv - AZ,CA,MN</p>
-	<p><strong>Customer Type:</strong> Blank will return all results.<br>
-<?php
-	$all_roles = get_editable_roles();
-	foreach($all_roles as $role_slug => $role_array) {
-		$checked = in_array($role_slug, $_POST['types'])?'checked':'';
-		echo "<label><input type='checkbox' name='types[]' value='$role_slug' $checked /> ".$role_array['name']."</label><br>";
-	}
-?>
-	</p>
+	<div>
+		<h3>Pre-done Reports</h3>
+		<p><label><input type="radio" name="pre-done-list" id="pre-done-list-1" value="1purchase" /> Purchased only once</label></p>
+	</div>
+	<div>
+		<h3>Or custom list</h3>
+		<p><strong>Customer Type:</strong> Blank will return all results.<br>
+	<?php
+		$all_roles = get_editable_roles();
+		foreach($all_roles as $role_slug => $role_array) {
+			$checked = in_array($role_slug, $_POST['types'])?'checked':'';
+			echo "<label><input type='checkbox' name='types[]' value='$role_slug' $checked /> ".$role_array['name']."</label><br>";
+		}
+	?>
+		</p>
+	</div>
 	
 	
 </form>
