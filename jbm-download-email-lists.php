@@ -53,15 +53,32 @@ function jbm_get_download_email_list() {
 	$table = $wpdb->prefix."users";
 	
 	if ( isset($_POST['preDoneList']) && $_POST['preDoneList'] == '1purchase' ) {
-		$all_users = $wpdb->get_results( "SELECT DISTINCT meta_value AS ID FROM `".$wpdb->prefix."postmeta` WHERE meta_key = '_customer_user' AND meta_value > '0' GROUP BY meta_value HAVING COUNT(meta_value) = 1" );
+		$all_users = $wpdb->get_results( "SELECT meta_value AS ID, post_id AS order_id FROM `".$wpdb->prefix."postmeta` WHERE meta_key = '_customer_user' AND meta_value > '0' GROUP BY meta_value HAVING COUNT(meta_value) = 1" );
+		//print_r($all_users);
 	} else {
 		$all_users = $wpdb->get_results( "SELECT ID FROM $table" );
 	}
 	
 	$list = array();
-	$list[] = array('Email','First Name','Last Name','Phone','State','Country','Type','User ID');
+	$list[] = array('Email','First Name','Last Name','Phone','State','Country','Type','User ID','Last Order Date');
 	foreach ( $all_users as $base ) {
 		$user = get_userdata($base->ID);
+		$user->last_order_date = '';
+		if ( isset( $base->order_id ) ) {
+			$order = wc_get_order($base->order_id);
+			$user->last_order_date = date('Y-m-d', strtotime($order->get_date_paid()));
+		} else {
+			$query = new WC_Order_Query( array(
+				'limit' => 1,
+				'orderby' => 'date',
+				'order' => 'DESC',
+				'customer' => $base->ID
+			) );
+			$orders = $query->get_orders();
+			foreach ( $orders as $order ) {
+				$user->last_order_date = date('Y-m-d', strtotime($order->get_date_paid()));
+			}
+		}
 		$role = reset($user->roles);
 		if ( isset( $_POST['types'] ) && !in_array($role, $_POST['types']) ) continue;
 		if ( isset( $_POST['states'] ) && !empty( $_POST['states'] ) && strpos(strtoupper($_POST['states']), strtoupper($user->billing_state)) === FALSE ) continue;
@@ -73,7 +90,8 @@ function jbm_get_download_email_list() {
 			$user->billing_state,
 			$user->billing_country,
 			$role,
-			$user->ID
+			$user->ID,
+			$user->last_order_date,
 		);
 	}
 	return $list;
