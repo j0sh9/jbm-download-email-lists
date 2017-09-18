@@ -139,13 +139,13 @@ function jbm_download_email_lists_html() {
 	<p><button name="view" value="1" class="button">View List</button></p>
 	<p><button class="button" name="download" value="1">Download List</button></p>
 	<p><strong>Filename:</strong> <input name="filename" type="text" value="<?php echo (isset( $_POST['filename'] )?$_POST['filename']:'');?>" /></p>
-	<p><strong>States:</strong> <input name="states" type="text" value="<?php echo (isset( $_POST['states'] )?$_POST['states']:'');?>" /> *csv - AZ,CA,MN</p>
 	<div>
 		<h3>Pre-done Reports</h3>
 		<p><label><input type="radio" name="pre-done-list" id="pre-done-list-1" value="1purchase" /> Purchased only once</label></p>
 	</div>
 	<div>
-		<h3>Or custom list</h3>
+		<h3>Filters</h3>
+		<p><strong>States:</strong> <input name="states" type="text" value="<?php echo (isset( $_POST['states'] )?$_POST['states']:'');?>" /> *csv - AZ,CA,MN</p>
 		<p><strong>Customer Type:</strong> Blank will return all results.<br>
 	<?php
 		$all_roles = get_editable_roles();
