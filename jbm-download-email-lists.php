@@ -52,7 +52,7 @@ function jbm_get_download_email_list() {
 	global $wpdb;
 	$table = $wpdb->prefix."users";
 	
-	if ( isset($_POST['pre-done-list']) && $_POST['pre-done-list'] == '1purchase' ) {
+	if ( isset($_POST['preDoneList']) && $_POST['preDoneList'] == '1purchase' ) {
 		$all_users = $wpdb->get_results( "SELECT DISTINCT meta_value AS ID FROM $table WHERE meta_key = '_customer_user' AND meta_value > '0'" );
 	} else {
 		$all_users = $wpdb->get_results( "SELECT ID FROM $table" );
@@ -141,7 +141,7 @@ function jbm_download_email_lists_html() {
 	<p><strong>Filename:</strong> <input name="filename" type="text" value="<?php echo (isset( $_POST['filename'] )?$_POST['filename']:'');?>" /></p>
 	<div>
 		<h3>Pre-done Reports</h3>
-		<p><label><input type="radio" name="pre-done-list" id="pre-done-list-1" value="1purchase" /> Purchased only once</label></p>
+		<p><label><input type="radio" name="preDoneList" id="preDoneList1" value="1purchase" /> Purchased only once</label></p>
 	</div>
 	<div>
 		<h3>Filters</h3>
