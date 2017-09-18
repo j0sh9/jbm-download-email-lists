@@ -53,7 +53,7 @@ function jbm_get_download_email_list() {
 	$table = $wpdb->prefix."users";
 	
 	if ( isset($_POST['pre-done-list']) && $_POST['pre-done-list'] == '1purchase' ) {
-		$all_users = $wpdb->get_results( "SELECT DISTINCT meta_value FROM $table WHERE meta_key = '_customer_user'" );
+		$all_users = $wpdb->get_results( "SELECT DISTINCT meta_value AS ID FROM $table WHERE meta_key = '_customer_user' AND meta_value > '0'" );
 	} else {
 		$all_users = $wpdb->get_results( "SELECT ID FROM $table" );
 	}
